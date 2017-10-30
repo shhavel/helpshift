@@ -29,11 +29,23 @@ end
 
 ## Usage
 
-Get issues:
+Get Issues:
 
 ```ruby
-response = Helpshift::Api.new.get('/issues')
-response['issues']
+resp = Helpshift.get('/issues')
+resp['issues']
+```
+
+Update Custom Issue Fields
+
+Configure issue fields in Helpshift admin - https://[customer_domain].helpshift.com/admin/.
+Navigate to Settings > Custom Issue Fields.
+
+Then you can update custom fields for any issue:
+
+```ruby
+resp = Helpshift.put('/issues/4', custom_fields: { my_number_field: { type: 'number', value: 43 } }.to_json)
+resp['updated-data']['custom_fields']) #=> {'my_number_field' => { 'type' => 'number', 'value' => 43 }}
 ```
 
 ## Development
