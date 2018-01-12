@@ -43,5 +43,15 @@ RSpec.describe Helpshift do
       expect(resp.code).to eql(200)
       expect(resp['updated-data']['custom_fields']).to eq({'my_number_field' => { 'type' => 'number', 'value' => 43 }})
     end
+
+    it "creates an issue" do
+      stub_request(:post, "https://api.helpshift.com/v1/oreillys-sbox/issues/").
+        with(headers: {'Accept'=>'application/json', 'Authorization'=>'Basic b3JlaWxseXMtc2JveF9hcGlfMTIzNC1hYmNk'}).
+        to_return(status: 201, body: '{"updated-data":{"custom_fields":{"my_title_field":{"type":"string","value":"my_new_issue"}}}}')
+
+      resp = Helpshift.post("/issues/", custom_fields: { my_title_field: { type: 'string', value: "my_new_issue" } }.to_json)
+      expect(resp.code).to eql(201)
+      expect(resp['updated-data']['custom_fields']).to eq({'my_title_field' => { 'type' => 'string', 'value' => "my_new_issue" }})
+    end
   end
 end
