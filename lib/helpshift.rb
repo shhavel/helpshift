@@ -40,4 +40,8 @@ module Helpshift
   def self.put(path, body)
     perform_request Net::HTTP::Put, path, base_uri: base_uri, headers: headers, body: body, format: :json
   end
+
+  def self.post(path, body)
+    perform_request Net::HTTP::Post, path, base_uri: base_uri, headers: headers, body: body, format: :json
+  end
 end

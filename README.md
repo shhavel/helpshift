@@ -29,14 +29,31 @@ end
 
 ## Usage
 
-Get Issues:
+###### Create Issues:
+```ruby
+body = {
+  email: 'your.email@yourdomain.com',
+  'title' => 'this is your title',
+  'message-body' => 'This is the message body'
+}
+resp = Helpshift.post('/issues/', body)
 
+```
+
+###### Get Issues:
+
+All Issues:
 ```ruby
 resp = Helpshift.get('/issues')
 resp['issues']
 ```
 
-Update Custom Issue Fields
+Single Issue:
+```ruby
+resp = Helpshift.get("/issues/#{issue_id}")
+resp['issues']
+```
+###### Update Custom Issue Fields
 
 Configure issue fields in Helpshift admin - https://[customer_domain].helpshift.com/admin/.
 Navigate to Settings > Custom Issue Fields.
@@ -56,7 +73,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/helpshift. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/shhavel/helpshift. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
