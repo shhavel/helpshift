@@ -29,31 +29,37 @@ end
 
 ## Usage
 
-###### Create Issues:
+### Create an Issue:
+
 ```ruby
 body = {
-  email: 'your.email@yourdomain.com',
+  'email' => 'your.email@yourdomain.com',
   'title' => 'this is your title',
   'message-body' => 'This is the message body'
 }
 resp = Helpshift.post('/issues/', body)
-
 ```
 
-###### Get Issues:
+### Get Issues:
+
+Check issues in Helpshift admin - https://[customer_domain].helpshift.com/admin/issues/0-4/
 
 All Issues:
+
 ```ruby
 resp = Helpshift.get('/issues')
 resp['issues']
 ```
 
 Single Issue:
+
 ```ruby
+issue_id = 279
 resp = Helpshift.get("/issues/#{issue_id}")
 resp['issues']
 ```
-###### Update Custom Issue Fields
+
+### Update Custom Issue Fields
 
 Configure issue fields in Helpshift admin - https://[customer_domain].helpshift.com/admin/.
 Navigate to Settings > Custom Issue Fields.

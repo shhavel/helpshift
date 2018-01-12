@@ -34,6 +34,18 @@ RSpec.describe Helpshift do
       expect(resp['issues'].count).to eql(2)
     end
 
+    it 'fetches single issue' do
+      stub_request(:get, 'https://api.helpshift.com/v1/oreillys-sbox/issues/4').
+         with(headers: {'Accept'=>'application/json', 'Authorization'=>'Basic b3JlaWxseXMtc2JveF9hcGlfMTIzNC1hYmNk'}).
+         to_return(status: 200, body: '{"page":1,"page-size":100,"issues":[{"tags":[],"meta":{},"custom_fields":{},"assignee_name":"Kinsey Eaton","app_id":"oreillys-sbox_app_20170721061817259-7602e7e2ab72b8f","title":"hi. which shoes would go with a black cocktail dress?","messages":[{"body":"hi. which shoes would go with a black cocktail dress?","created_at":1500656417601,"author":{"name":"serena","id":"oreillys-sbox_profile_20170721165947836-752718ef4230602","emails":["serena@example.com"]},"origin":"end-user"}],"assignee_id":"oreillys-sbox_profile_20170719002316050-bcf64ee2ef7953a","id":4,"author_name":"serena","author_email":"serena@example.com","domain":"oreillys-sbox","state_data":{"state":"resolved","changed_at":1500657362636},"created_at":1500656417601}],"total-hits":1,"total-pages":1}')
+
+      resp = Helpshift.get('/issues/4')
+      expect(resp.code).to eql(200)
+      expect(resp['issues']).to be_an(Array)
+      expect(resp['issues'].count).to eql(1)
+      expect(resp['issues'][0]['messages'][0]['body']).to eq('hi. which shoes would go with a black cocktail dress?')
+    end
+
     it "updates issue's custom_fields" do
       stub_request(:put, "https://api.helpshift.com/v1/oreillys-sbox/issues/4").
         with(headers: {'Accept'=>'application/json', 'Authorization'=>'Basic b3JlaWxseXMtc2JveF9hcGlfMTIzNC1hYmNk'}).
@@ -45,13 +57,14 @@ RSpec.describe Helpshift do
     end
 
     it "creates an issue" do
-      stub_request(:post, "https://api.helpshift.com/v1/oreillys-sbox/issues/").
-        with(headers: {'Accept'=>'application/json', 'Authorization'=>'Basic b3JlaWxseXMtc2JveF9hcGlfMTIzNC1hYmNk'}).
-        to_return(status: 201, body: '{"updated-data":{"custom_fields":{"my_title_field":{"type":"string","value":"my_new_issue"}}}}')
+      stub_request(:post, "https://api.helpshift.com/v1/oreillys-sbox/issues").
+        with(headers: {'Accept'=>'application/json', 'Authorization'=>'Basic b3JlaWxseXMtc2JveF9hcGlfMTIzNC1hYmNk'},
+             body: 'email=your.email%40yourdomain.com&message-body=This%20is%20the%20message%20body').
+        to_return(status: 201, body: '{"created_at":1515749028185,"id":"281","title":"This is the message body","tags":[],"meta":{},"custom_fields":{}}')
 
-      resp = Helpshift.post("/issues/", custom_fields: { my_title_field: { type: 'string', value: "my_new_issue" } }.to_json)
+      resp = Helpshift.post("/issues", 'email' => 'your.email@yourdomain.com', 'message-body' => 'This is the message body')
       expect(resp.code).to eql(201)
-      expect(resp['updated-data']['custom_fields']).to eq({'my_title_field' => { 'type' => 'string', 'value' => "my_new_issue" }})
+      expect(resp.body).to eq('{"created_at":1515749028185,"id":"281","title":"This is the message body","tags":[],"meta":{},"custom_fields":{}}')
     end
   end
 end
